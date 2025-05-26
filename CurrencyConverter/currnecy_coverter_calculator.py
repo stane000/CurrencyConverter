@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+import subprocess
 from currency_coverter_interface import CurrencyAmount, ICurrencyConverter
 from pywinauto.application import Application
 from time import sleep
@@ -13,8 +14,16 @@ pictures_folder = r'C:\Users\stank\Desktop\projects\CurrencyConverter\CurrencyCo
 class PywinautoCurrencyConverter(ICurrencyConverter):
     def __init__(self):
         super().__init__()
-        self.app = Application(backend="uia").start("calc.exe")
-        time.sleep(2)  # Wait for the application to start
+        # self.app = Application(backend="uia").start("calc.exe")
+        # time.sleep(2)  # Wait for the application to start
+        
+        # Step 1: Open the Calculator using subprocess
+        subprocess.Popen('calc.exe')
+
+        sleep(2)
+        # Use Win + Up to maximize
+        pyautogui.hotkey('win', 'up')
+            
 
     def covert_rsd_to_euros(self, amount: float) -> CurrencyAmount:
         return self.__convert(amount, "EUR")
@@ -80,7 +89,7 @@ class PywinautoCurrencyConverter(ICurrencyConverter):
             except:
                 continue
         print("No button found on screen.")
-        raise ValueError(f"Button not found on screen.", {images})
+        raise ValueError(f"Button not found on screen.", {str(images)})
 
 
 
