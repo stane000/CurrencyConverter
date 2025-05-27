@@ -9,7 +9,8 @@ import time
 import os
 
 
-pictures_folder = r'C:\Users\stank\Desktop\projects\CurrencyConverter\CurrencyConverter'
+#pictures_folder = r'C:\Users\stank\Desktop\projects\CurrencyConverter\CurrencyConverter'
+pictures_folder = r'C:\Users\istankovic\Desktop\me\Assignment_Project\CurrencyConverter\CurrencyConverter'
 
 class PywinautoCurrencyConverter(ICurrencyConverter):
     def __init__(self):
@@ -61,7 +62,7 @@ class PywinautoCurrencyConverter(ICurrencyConverter):
         pyautogui.write(str(amount), interval=0.1)  # Types S, then R, then D
 
     
-    def __click_button_by_image(self, images: list[str], position: str= "center", confidence: float = 0.8):
+    def __click_button_by_image(self, images: list[str], position: str= "center", confidence: float = 0.):
         """
         Clicks a button on the screen by matching its image.
         :param images: List of image paths to search for.
@@ -69,7 +70,7 @@ class PywinautoCurrencyConverter(ICurrencyConverter):
         """
         for image in images:
             try:
-                button_location = pyautogui.locateOnScreen(os.path.join(pictures_folder,image), confidence=confidence)
+                button_location = pyautogui.locateOnScreen(os.path.join(pictures_folder,image), confidence=confidence, region=(1920, 0, 1920, 1080))
 
                 if button_location:
 

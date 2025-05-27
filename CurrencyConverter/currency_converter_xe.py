@@ -68,10 +68,10 @@ class CurrencyConverterXE(ICurrencyConverter):
 # Example usage
 if __name__ == "__main__":
     converter = CurrencyConverterXE()
-    eur_result = converter.covert_rsd_to_euros("100")
+    eur_result = converter.covert_rsd_to_euros("10000")
     print("RSD to EUR:", eur_result)
 
-    usd_result = converter.covert_rsd_to_usd("100")
+    usd_result = converter.covert_rsd_to_usd("10000")
     print("RSD to USD:", usd_result)
 
     converter.close()

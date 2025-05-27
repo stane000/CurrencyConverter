@@ -1,2 +1,2 @@
-call env\Scripts\activate.bat
+call venv\Scripts\activate.bat
 pip install -r ./requirements.txt
