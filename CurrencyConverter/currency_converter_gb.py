@@ -3,7 +3,7 @@ from time import sleep
 from playwright.sync_api import sync_playwright
 from currency_coverter_interface import CurrencyAmount, ICurrencyConverter
 
-class CurrencyConverterXE(ICurrencyConverter):
+class CurrencyConverterGB(ICurrencyConverter):
 
     def __init__(self):
         super().__init__()
@@ -12,11 +12,7 @@ class CurrencyConverterXE(ICurrencyConverter):
         self.browser = self.playwright.chromium.launch(headless=False)
         self.page = self.browser.new_page()
 
-        # Accept cookies if shown
-        try:
-            self.page.click("text=Accept", timeout=3000)
-        except:
-            pass
+
     
     # Public methods
     def covert_rsd_to_euros(self, amount: str = "100") -> CurrencyAmount:
@@ -29,7 +25,14 @@ class CurrencyConverterXE(ICurrencyConverter):
     def __convert(self, amount: str, to_currency: str) -> CurrencyAmount:
 
         # open page
-        self.page.goto("https://www.xe.com/")
+        self.page.goto("https://wise.com/gb/currency-converter/")
+        sleep(2)
+
+        # Accept cookies if shown
+        try:
+            self.page.click("text=Accept", timeout=3000)
+        except:
+            pass
         
         # Fill amount to convert
         self.page.press("#amount", "Control+A")
@@ -66,7 +69,7 @@ class CurrencyConverterXE(ICurrencyConverter):
 
 # Example usage
 if __name__ == "__main__":
-    converter = CurrencyConverterXE()
+    converter = CurrencyConverterGB()
     eur_result = converter.covert_rsd_to_euros("10000")
     print("RSD to EUR:", eur_result)
 
