@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 import subprocess
-from currency_coverter_interface import CurrencyAmount, ICurrencyConverter
+from CurrencyConverter.currency_converter_interface import CurrencyAmount, ICurrencyConverter
 from pywinauto.application import Application
 from time import sleep
 import pyautogui

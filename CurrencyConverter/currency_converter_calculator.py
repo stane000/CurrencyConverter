@@ -1,34 +1,28 @@
 import time
-from typing import Optional
 
-import psutil
-from pywinauto import Application
+from currency_converter_calculator_base import CurrencyConverterCalculatorBase
+from currency_converter_interface import CurrencyAmount
 
-class CurrencyConverter:
+class CurrencyConverterCalculator(CurrencyConverterCalculatorBase):
     """
     A class to convert RSD to Euro or USD using the Windows Calculator app.
     Requires language settings to be set to English
     """
+    
+    def __init__(self) -> None:
+        super().__init__()
 
-    calc: Optional[Application.window]
+    # Public methods
+    def convert_rsd_to_euro(self, amount: float) -> CurrencyAmount:
+        self._start_calculator_and_prepare()
+        return self._convert_currency(amount, "EUR")
 
-    def __init__(self):
-        self.calc = None
-
-    def _kill_existing_calculator(self):
-        for proc in psutil.process_iter(['pid', 'name']):
-            if "calculator" in str(proc.info['name']).lower():
-                proc.kill()
-
-    def _start_calculator_and_prepare(self):
-        self._kill_existing_calculator()
-        time.sleep(1)
-        app = Application(backend="uia").start("calc.exe")
-        time.sleep(2)
-        app.connect(best_match='Calculator')
-        self.calc = app.window(best_match='Calculator')
-        self.calc.wait('visible', timeout=10)
-        time.sleep(0.5)
+    def convert_rsd_to_usd(self, amount: float) -> CurrencyAmount:
+        self._start_calculator_and_prepare()
+        return self._convert_currency(amount, 'USD')
+    
+    # Private methods
+    def _convert_currency(self, amount: float, target_currency: str) -> CurrencyAmount:
 
         # Switch to Currency mode
         self.calc.type_keys('%H')
@@ -37,8 +31,6 @@ class CurrencyConverter:
         time.sleep(0.5)
         self.calc.type_keys('{ENTER}')
         time.sleep(1)
-
-    def _convert(self, amount: float, target_currency: str) -> str:
 
         # Enter amount
         self.calc.type_keys(str(int(amount)))
@@ -67,7 +59,7 @@ class CurrencyConverter:
         self.calc.type_keys('{ENTER}')
         time.sleep(0.5)
         
-        if target_currency == "usd":
+        if target_currency.upper() == "USD":
             result_elem = "" 
             timeout = 30
             start_time = time.time()
@@ -92,19 +84,10 @@ class CurrencyConverter:
 
         # Read result from Value2
         result_elem = self.calc.child_window(auto_id='Value2', control_type='Text')
-        return result_elem.window_text()
-
-    def convert_rsd_to_euro(self, amount: float) -> str:
-        self._start_calculator_and_prepare()
-        return self._convert(amount, 'euro')
-
-    def convert_rsd_to_usd(self, amount: float) -> str:
-        self._start_calculator_and_prepare()
-        return self._convert(amount, 'usd')
-
-
+        return CurrencyAmount(float(result_elem.window_text().replace(".", "").replace(",", ".")), target_currency.upper())
+    
 # Usage
 if __name__ == "__main__":
-    converter = CurrencyConverter()
+    converter = CurrencyConverterCalculator()
     print("Converted to Euro:", converter.convert_rsd_to_euro(105000))
     print("Converted to USD:", converter.convert_rsd_to_usd(105000))

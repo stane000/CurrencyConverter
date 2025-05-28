@@ -1,11 +1,21 @@
 
 from time import sleep
 from playwright.sync_api import sync_playwright
-from currency_coverter_interface import CurrencyAmount, ICurrencyConverter
+from currency_converter_interface import CurrencyAmount, ICurrencyConverter
 
 class CurrencyConverterXE(ICurrencyConverter):
+    """
+    The CurrencyConverter class automates real-time currency conversion using exchange rates 
+    fetched from 'https://www.xe.com/' via Playwright. 
+    It is designed specifically to convert amounts from Serbian Dinar (RSD) to:
 
-    def __init__(self):
+    Euro (EUR)
+
+    US Dollar (USD)
+
+    """
+
+    def __init__(self) -> None:
         super().__init__()
 
         self.playwright = sync_playwright().start()
@@ -19,14 +29,14 @@ class CurrencyConverterXE(ICurrencyConverter):
             pass
     
     # Public methods
-    def covert_rsd_to_euros(self, amount: str = "100") -> CurrencyAmount:
-        return self.__convert(amount, "EUR")
+    def convert_rsd_to_euros(self, amount: float) -> CurrencyAmount:
+        return self._convert_currency(amount, "EUR")
 
-    def covert_rsd_to_usd(self, amount: str = "100") -> CurrencyAmount:
-        return self.__convert(amount, "USD")
+    def convert_rsd_to_usd(self, amount: float) -> CurrencyAmount:
+        return self._convert_currency(amount, "USD")
     
     # Private methods
-    def __convert(self, amount: str, to_currency: str) -> CurrencyAmount:
+    def _convert_currency(self, amount: str, to_currency: str) -> CurrencyAmount:
 
         # open page
         self.page.goto("https://www.xe.com/")
@@ -34,7 +44,7 @@ class CurrencyConverterXE(ICurrencyConverter):
         # Fill amount to convert
         self.page.press("#amount", "Control+A")
         self.page.press("#amount", "Backspace")
-        self.page.fill("#amount", amount)
+        self.page.fill("#amount", str(amount))
 
         # Select "From" currency
         input_selector = 'input[placeholder="Type to search..."]'
@@ -56,8 +66,8 @@ class CurrencyConverterXE(ICurrencyConverter):
         
         # Wait for results
         sleep(0.5)
-        output = self.page.text_content('p.sc-708e65be-1.chuBHG')
-        return CurrencyAmount.create(output)
+        result_value = self.page.text_content('p.sc-708e65be-1.chuBHG')
+        return CurrencyAmount(float(result_value.split(" ")[0].replace(",","")), to_currency)
     
     def close(self):
         self.page.close()
@@ -67,11 +77,11 @@ class CurrencyConverterXE(ICurrencyConverter):
 # Example usage
 if __name__ == "__main__":
     converter = CurrencyConverterXE()
-    eur_result = converter.covert_rsd_to_euros("10000")
-    print("RSD to EUR:", eur_result)
+    eur_result = converter.covert_rsd_to_euros(10000)
+    print(eur_result)
 
-    usd_result = converter.covert_rsd_to_usd("10000")
-    print("RSD to USD:", usd_result)
+    usd_result = converter.covert_rsd_to_usd(10000)
+    print(usd_result)
 
     converter.close()
     
