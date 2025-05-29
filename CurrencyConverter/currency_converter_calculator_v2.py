@@ -51,7 +51,7 @@ class CurrencyConverterCalculatorV2(CurrencyConverterCalculatorBase):
             self.calc.type_keys('*')
             time.sleep(0.1)
 
-            self.calc.type_keys(f"{str(rate).replace('.', ',')}")  # Replace dot with comma for correct decimal format
+            self.calc.type_keys(f"{str(rate)}")  # Replace dot with comma for correct decimal format
 
             # Press Enter to get the result
             self.calc.type_keys('{ENTER}')
@@ -59,8 +59,8 @@ class CurrencyConverterCalculatorV2(CurrencyConverterCalculatorBase):
 
             # Retrieve the result from the Calculator's display
             result_element = self.calc.child_window(auto_id='CalculatorResults', control_type='Text')
-            result_text = result_element.window_text()
-            return CurrencyAmount(float(result_text.replace(".", "").replace(",", ".").split(" ")[-1]), currency.upper())
+            result_text = result_element.window_text().split(" ")[-1].replace(",", "")  
+            return CurrencyAmount(float(result_text), currency.upper())
         
         except Exception as e:
             print(f"Error interacting with Calculator: {e}")
@@ -85,7 +85,7 @@ if __name__ == "__main__":
     converter = CurrencyConverterCalculatorV2()
     
     # Example usage
-    amount_rsd = 1000000  # Amount in RSD
+    amount_rsd = 105000  # Amount in RSD
     #euro_result = converter.convert_rsd_to_euro(amount_rsd)
     usd_result = converter.convert_rsd_to_usd(amount_rsd)
     

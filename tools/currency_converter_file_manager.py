@@ -11,16 +11,10 @@ class CurrencyAmount:
 
 class CurrencyConverterFileManager:
 
-    def save_to_file(self, filepath: str, currency_amount: CurrencyAmount, file_name: str = "output.txt") -> None:
-
-        # Create 'results' folder if it doesn't exist
-        os.makedirs(filepath, exist_ok=True)
-
-        # Full path for the file inside 'results' folder
-        output_path = os.path.join(filepath, file_name)
+    def save_to_file(self, filepath: str, currency_amount: CurrencyAmount) -> None:
 
         try:
-            with open(output_path, 'w', encoding='utf-8') as file:
+            with open(filepath, 'w', encoding='utf-8') as file:
                 file.write(f"{currency_amount}")
         except Exception as e:
             print(f"Error saving to file: {e}")

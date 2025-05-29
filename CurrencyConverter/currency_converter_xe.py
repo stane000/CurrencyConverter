@@ -29,7 +29,7 @@ class CurrencyConverterXE(ICurrencyConverter):
             pass
     
     # Public methods
-    def convert_rsd_to_euros(self, amount: float) -> CurrencyAmount:
+    def convert_rsd_to_euro(self, amount: float) -> CurrencyAmount:
         return self._convert_currency(amount, "EUR")
 
     def convert_rsd_to_usd(self, amount: float) -> CurrencyAmount:
@@ -77,10 +77,10 @@ class CurrencyConverterXE(ICurrencyConverter):
 # Example usage
 if __name__ == "__main__":
     converter = CurrencyConverterXE()
-    eur_result = converter.covert_rsd_to_euros(10000)
-    print(eur_result)
+    # eur_result = converter.convert_rsd_to_euro(10000)
+    # print(eur_result)
 
-    usd_result = converter.covert_rsd_to_usd(10000)
+    usd_result = converter.convert_rsd_to_usd(105000)
     print(usd_result)
 
     converter.close()

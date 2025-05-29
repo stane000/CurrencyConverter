@@ -20,7 +20,7 @@ class CurrencyConverterGB(ICurrencyConverter):
         super().__init__()
 
     # Public methods
-    async def convert_rsd_to_euros(self, amount: float) -> CurrencyAmount:
+    async def convert_rsd_to_euro(self, amount: float) -> CurrencyAmount:
         return await self._convert_currency(amount, "EUR")
 
     async def convert_rsd_to_usd(self, amount: float) -> CurrencyAmount:
@@ -72,7 +72,7 @@ if __name__ == "__main__":
     # Example usage
     async def main():
         converter = CurrencyConverterGB()
-        result_eur = await converter.convert_rsd_to_euros(1000)
+        result_eur = await converter.convert_rsd_to_euro(1000)
         result_usd = await converter.convert_rsd_to_usd(1000)
         print(result_eur)
         print(result_usd)

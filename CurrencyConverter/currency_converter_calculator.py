@@ -80,14 +80,14 @@ class CurrencyConverterCalculator(CurrencyConverterCalculatorBase):
 
         self.calc.type_keys('{ENTER}')
         time.sleep(0.5)
-         #--------------------------------
 
         # Read result from Value2
         result_elem = self.calc.child_window(auto_id='Value2', control_type='Text')
-        return CurrencyAmount(float(result_elem.window_text().replace(".", "").replace(",", ".")), target_currency.upper())
+        result_text = result_elem.window_text().split(" ")[2].replace(",", "")
+        return CurrencyAmount(float(result_text), target_currency.upper())
     
 # Usage
 if __name__ == "__main__":
     converter = CurrencyConverterCalculator()
-    print("Converted to Euro:", converter.convert_rsd_to_euro(105000))
+    #print("Converted to Euro:", converter.convert_rsd_to_euro(105000))
     print("Converted to USD:", converter.convert_rsd_to_usd(105000))

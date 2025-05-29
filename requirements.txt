@@ -1,8 +1,4 @@
-PyAutoGUI
-pytesseract
+
 playwright
-opencv-python
-numpy
-pillow
 pywinauto
 psutil
