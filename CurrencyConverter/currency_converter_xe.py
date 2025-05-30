@@ -19,7 +19,7 @@ class CurrencyConverterXE(ICurrencyConverter):
         super().__init__()
 
         self.playwright = sync_playwright().start()
-        self.browser = self.playwright.chromium.launch(headless=False)
+        self.browser = self.playwright.chromium.launch(headless=True)
         self.page = self.browser.new_page()
 
         # Accept cookies if shown
@@ -77,10 +77,10 @@ class CurrencyConverterXE(ICurrencyConverter):
 # Example usage
 if __name__ == "__main__":
     converter = CurrencyConverterXE()
-    # eur_result = converter.convert_rsd_to_euro(10000)
-    # print(eur_result)
+    eur_result = converter.convert_rsd_to_euro(10000)
+    print(eur_result)
 
-    usd_result = converter.convert_rsd_to_usd(105000)
+    usd_result = converter.convert_rsd_to_usd(1000)
     print(usd_result)
 
     converter.close()

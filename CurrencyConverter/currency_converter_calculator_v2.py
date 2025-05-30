@@ -1,6 +1,5 @@
 
 import requests
-import time
 
 from currency_converter_calculator_base import CurrencyConverterCalculatorBase
 from currency_converter_interface import CurrencyAmount
@@ -37,25 +36,23 @@ class CurrencyConverterCalculatorV2(CurrencyConverterCalculatorBase):
  
             self._start_calculator_and_prepare()
 
-            # Switch to Standard mode using Alt+1
-            self.calc.type_keys('%1')
-            time.sleep(0.5)
+           # Switch to Standard mode using Alt+1
+            self._press_keys('%1')
 
             # Clear any previous input
-            self.calc.type_keys('{ESC}')
-            time.sleep(0.5)
+            self._press_keys('{ESC}')
 
-            self.calc.type_keys(f"{amount_rsd}")
+            # Type the amount in RSD
+            self._press_keys(f"{amount_rsd}")
 
             # Press multiplication operator
-            self.calc.type_keys('*')
-            time.sleep(0.1)
+            self._press_keys('*', delay=0.1)
 
-            self.calc.type_keys(f"{str(rate)}")  # Replace dot with comma for correct decimal format
+            # Type the exchange rate
+            self._press_keys(f"{rate}")
 
-            # Press Enter to get the result
-            self.calc.type_keys('{ENTER}')
-            time.sleep(1)  # Wait for the result to appear
+            # Press Enter to calculate the result
+            self._press_keys('{ENTER}', delay=1)
 
             # Retrieve the result from the Calculator's display
             result_element = self.calc.child_window(auto_id='CalculatorResults', control_type='Text')

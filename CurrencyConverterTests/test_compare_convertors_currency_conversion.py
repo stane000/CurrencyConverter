@@ -1,51 +1,117 @@
-import subprocess
-import sys
-import pytest
-import os
 
-# Define paths based on known structure
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-APP_PATH = os.path.join(BASE_DIR, "CurrencyConverter", "app.py")
-RESULTS_DIR = os.path.join(BASE_DIR, "results")
+import pytest
+from converter_app_test import ConverterAppTest
 
 # Parameters for testing
-converter_list = [["calc", "web_xe", "calc2"]]
+converters_list = [["web_xe", 'web_gb']]
 amounts = [1000, 2000, 3000]
 currencies = ["euro", "usd"]
 
-@pytest.mark.parametrize("converters", converter_list)
+@pytest.mark.web
+@pytest.mark.parametrize("converters", converters_list)
 @pytest.mark.parametrize("amount", amounts)
 @pytest.mark.parametrize("currency", currencies)
-def test_converter_app_functionality(converters, amount, currency):
+def test_compere_currency_amounts_web_gb_and_web_xe(converters: str, amount: str, currency: str) -> None:
+    """
+    Test to compare currency conversion results from different converters.
 
+    Converter web_xe: uses 'https://www.xe.com/'  for real-time conversion.
+    Converter web_gb: uses'https://wise.com/gb/currency-converter/ for real-time conversion.
+    
+    Parameters:
+    - converters: List of converter names to test.
+    - amount: Amount in RSD to convert.
+    - currency: Target currency for conversion (euro or usd).
+    """
+    print(f"Testing converters: {converters} for amount: {amount} and currency: {currency}")
+    compare_convertors_currency_conversion(converters, amount, currency)
+
+# Parameters for testing
+converters_list = [["calc", "calc2"]]
+
+@pytest.mark.calc
+@pytest.mark.parametrize("converters", converters_list)
+@pytest.mark.parametrize("amount", amounts)
+@pytest.mark.parametrize("currency", currencies)
+def test_compere_currency_amounts_calc_and_calc2(converters: str, amount: str, currency: str) -> None:
+    """
+    Test to compare currency conversion results from different converters.
+
+    Converter calculator app 1: uses Windows Calculator built in currency conversion app for conversion.
+    Converter calculator app 2: uses Windows Calculator to calculate currency conversion based on exchange rate.
+    
+    Parameters:
+    - converters: List of converter names to test.
+    - amount: Amount in RSD to convert.
+    - currency: Target currency for conversion (euro or usd).
+    """
+    print(f"Testing converters: {converters} for amount: {amount} and currency: {currency}")
+    compare_convertors_currency_conversion(converters, amount, currency)
+
+# Parameters for testing
+converters_list = [["web_xe", "calc"]]
+
+@pytest.mark.xe_calc
+@pytest.mark.parametrize("converters", converters_list)
+@pytest.mark.parametrize("amount", amounts)
+@pytest.mark.parametrize("currency", currencies)
+def test_compere_currency_amounts_xe_and_calc(converters: str, amount: str, currency: str) -> None:
+    """
+    Test to compare currency conversion results from different converters.
+
+    Converter web_xe: uses 'https://www.xe.com/'  for real-time conversion.
+    Converter calculator app: uses Windows Calculator built in currency conversion app for conversion.
+    
+    Parameters:
+    - converters: List of converter names to test.
+    - amount: Amount in RSD to convert.
+    - currency: Target currency for conversion (euro or usd).
+    """
+    print(f"Testing converters: {converters} for amount: {amount} and currency: {currency}")
+    compare_convertors_currency_conversion(converters, amount, currency)
+
+# Parameters for testing
+converters_list = [["web_xe", "calc2"]]
+
+@pytest.mark.xe_calc2
+@pytest.mark.parametrize("converters", converters_list)
+@pytest.mark.parametrize("amount", amounts)
+@pytest.mark.parametrize("currency", currencies)
+def test_compere_currency_amounts_xe_and_calc2(converters: str, amount: str, currency: str) -> None:
+    """
+    Test to compare currency conversion results from different converters.
+
+    Converter web_xe: uses 'https://www.xe.com/'  for real-time conversion.
+    Converter calculator app 2: uses Windows Calculator to calculate currency conversion based on exchange rate.
+    
+    Parameters:
+    - converters: List of converter names to test.
+    - amount: Amount in RSD to convert.
+    - currency: Target currency for conversion (euro or usd).
+    """
+    print(f"Testing converters: {converters} for amount: {amount} and currency: {currency}")
+    compare_convertors_currency_conversion(converters, amount, currency)
+
+def compare_convertors_currency_conversion(converters: str, amount: str, currency: str) -> None:
+
+    currency_amount_and_converter = []
     for converter in converters:
 
-        file_name = f"test_output_{converter}_{amount}_rsd_to_{currency}"
-        output_file = os.path.join(RESULTS_DIR, file_name + ".txt")
-
-        result = subprocess.run(
-        [sys.executable, APP_PATH, converter, currency, str(amount), output_file],
-        capture_output=True,
-        text=True
-        )   
-
-    # Check for successful exit
-    assert result.returncode == 0, f"Process failed:\nSTDOUT: {result.stdout}\nSTDERR: {result.stderr}"
-
-    # Check for expected output in stdout
-    assert "Conversion result:" in result.stdout, f"Missing output: {result.stdout}"
-
-    # Check the output file was created
-    assert os.path.exists(output_file), f"Missing result file: {output_file}"
-
-    # # Optional: Clean up generated file after test
-    os.remove(output_file)
+        print(f"Starting converter: {converter} for amount: {amount} and currency: {currency}")
+        converter_app_test = ConverterAppTest()
+        output_file = converter_app_test.run_currency_converter_app(converter, amount, currency)
+        converter_app_test.check_output_file_exists(output_file)
+        output_file = converter_app_test.get_currency_amount_from_file(output_file)
+        currency_amount_and_converter.append((converter, output_file))
+    
+    if len(converters) > 1:
+        converter_app_test.assert_all_file_outputs(currency_amount_and_converter)
 
 
 # Add main method for standalone execution
 def main():
     import sys
-    sys.exit(pytest.main([__file__]))
+    sys.exit(pytest.main(["-s", "-v", __file__]))
 
 if __name__ == "__main__":
     main()

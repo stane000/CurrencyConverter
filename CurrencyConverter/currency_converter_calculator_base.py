@@ -21,8 +21,15 @@ class CurrencyConverterCalculatorBase(ICurrencyConverter):
     def convert_rsd_to_euro(self, amount: float) -> CurrencyAmount: ...
     
     def convert_rsd_to_usd(self, amount: float) -> CurrencyAmount: ...
-    
+
     # Private methods   
+    def _press_keys(self, keys: str, delay: float = 0.5) -> None:
+        """
+        Presses the specified keys in the Calculator application and waits for a short delay.
+        """
+        self.calc.type_keys(keys)
+        time.sleep(delay)
+
     def _kill_existing_calculator(self):
         for proc in psutil.process_iter(['pid', 'name']):
             if "calculator" in str(proc.info['name']).lower():

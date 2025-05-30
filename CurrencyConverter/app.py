@@ -1,15 +1,11 @@
 import argparse
-import os
-import sys
+import asyncio
 
 from currency_converter_interface import ICurrencyConverter
 from currency_converter_calculator import CurrencyConverterCalculator
 from currency_converter_calculator_v2 import CurrencyConverterCalculatorV2
 from currency_converter_gb import CurrencyConverterGB
 from currency_converter_xe import CurrencyConverterXE
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'tools')))
-from currency_converter_file_manager import CurrencyConverterFileManager
 
 def positive_float(value):
     try:
@@ -34,29 +30,38 @@ def main():
     parser.add_argument('amount', type=positive_float, help='Amount in RSD to convert')
     parser.add_argument('file_path', type=txt_file_path, help='File path to result')
 
+    args = parser.parse_args()
+    converter: ICurrencyConverter = None
+
+    if args.converter == "web_xe":
+        converter = CurrencyConverterXE()
+    elif args.converter == "web_gb":
+        converter = CurrencyConverterGB()  
+    elif args.converter == "calc":
+        converter = CurrencyConverterCalculator()
+    elif args.converter == "calc2":
+        converter = CurrencyConverterCalculatorV2()   
+
     try:
-        args = parser.parse_args()
-        converter: ICurrencyConverter = None
-
-        if args.converter == "web_xe":
-            converter = CurrencyConverterXE()
-        elif args.converter == "web_gb":
-            converter = CurrencyConverterGB()  
-        elif args.converter == "calc":
-            converter = CurrencyConverterCalculator()
-        elif args.converter == "calc2":
-            converter = CurrencyConverterCalculatorV2()      
-
         if args.currency == 'euro':
-            currency_amount = converter.convert_rsd_to_euro(args.amount)
+            if args.converter == 'web_gb':
+                currency_amount = asyncio.run(converter.convert_rsd_to_euro(args.amount))
+            else:
+                currency_amount = converter.convert_rsd_to_euro(args.amount)
         else:
-            currency_amount = converter.convert_rsd_to_usd(args.amount)
+            if args.converter == 'web_gb':
+                currency_amount = asyncio.run(converter.convert_rsd_to_usd(args.amount))
+            else:
+                currency_amount = converter.convert_rsd_to_usd(args.amount)
 
     except Exception as ex:
         print(f"Error: {ex}")
     else:
-        print(f"Conversion result: {currency_amount}")
-        CurrencyConverterFileManager().save_to_file(args.file_path, currency_amount)
+        converter.save_currency_amount_to_file(args.file_path, currency_amount)
+        print(f"Conversion result for {args.amount} RSD is: {currency_amount}")
+   
 
 if __name__ == "__main__":
     main()
+
+

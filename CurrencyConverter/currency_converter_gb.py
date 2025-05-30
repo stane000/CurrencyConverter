@@ -1,5 +1,6 @@
 
 import asyncio
+from time import sleep
 from playwright.async_api import async_playwright
 
 from currency_converter_interface import CurrencyAmount, ICurrencyConverter
@@ -29,7 +30,7 @@ class CurrencyConverterGB(ICurrencyConverter):
     # Private methods
     async def _convert_currency(self, amount: float, to_currency: str) -> CurrencyAmount:
         async with async_playwright() as p:
-            browser = await p.chromium.launch(headless=False)
+            browser = await p.chromium.launch(headless=True)
             context = await browser.new_context()
             page = await context.new_page()
 
@@ -50,12 +51,14 @@ class CurrencyConverterGB(ICurrencyConverter):
             await page.click('#source-inputSelectedCurrency')
             await page.wait_for_selector('#source-inputSelectedCurrencySearch')
             await page.fill('#source-inputSelectedCurrencySearch', 'RSD')
+            sleep(0.2)
             await page.keyboard.press('Enter')
 
             # Select target currency (EUR or USD)
             await page.click('#target-inputSelectedCurrency')
             await page.wait_for_selector('#target-inputSelectedCurrencySearch')
             await page.fill('#target-inputSelectedCurrencySearch', to_currency)
+            sleep(0.2)
             await page.keyboard.press('Enter')
 
             # Wait for result
