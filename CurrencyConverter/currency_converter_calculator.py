@@ -5,7 +5,7 @@ from currency_converter_interface import CurrencyAmount
 
 class CurrencyConverterCalculator(CurrencyConverterCalculatorBase):
     """
-    A class to convert RSD to Euro or USD using the Windows Calculator app.
+    A class to convert RSD to Euro or USD using the Windows Calculator built-in currency conversion
     Requires language settings to be set to English
     """
     

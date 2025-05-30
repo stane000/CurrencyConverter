@@ -19,7 +19,8 @@ def step(func):
 
 class ConverterAppTest:
     """
-    A class to test the currency converter application by running it as a subprocess."""
+    A class to test the currency converter application by running it as a subprocess.
+    """
     
     @step
     def run_currency_converter_app(self, converter: str, amount: float, currency: str) -> str:

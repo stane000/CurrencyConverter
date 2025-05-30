@@ -3,3 +3,4 @@ pywinauto
 psutil
 pytest
 pytest-sugar
+requests

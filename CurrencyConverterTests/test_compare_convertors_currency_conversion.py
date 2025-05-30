@@ -110,4 +110,4 @@ def compare_convertors_currency_conversion(converters: str, amount: str, currenc
         converter_app_test.assert_all_file_outputs(currency_amount_and_converter)
 
 
-sys.exit(pytest.main(["-s", "-v", __file__]))
+sys.exit(pytest.main(["-s", "-v", "-m web", __file__]))
