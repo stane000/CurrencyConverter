@@ -1,17 +1,19 @@
 
 import pytest
+import sys
+from typing import List
 from converter_app_test import ConverterAppTest
 
 # Parameters for testing
-converters_list = [["web_xe", 'web_gb']]
+web_converters_list  = [["web_xe", 'web_gb']]
 amounts = [1000, 2000, 3000]
 currencies = ["euro", "usd"]
 
 @pytest.mark.web
-@pytest.mark.parametrize("converters", converters_list)
+@pytest.mark.parametrize("converters", web_converters_list )
 @pytest.mark.parametrize("amount", amounts)
 @pytest.mark.parametrize("currency", currencies)
-def test_compere_currency_amounts_web_gb_and_web_xe(converters: str, amount: str, currency: str) -> None:
+def test_compere_currency_amounts_web_gb_and_web_xe(converters: List[str], amount: str, currency: str) -> None:
     """
     Test to compare currency conversion results from different converters.
 
@@ -27,13 +29,13 @@ def test_compere_currency_amounts_web_gb_and_web_xe(converters: str, amount: str
     compare_convertors_currency_conversion(converters, amount, currency)
 
 # Parameters for testing
-converters_list = [["calc", "calc2"]]
+calc_converters_list = [["calc", "calc2"]]
 
 @pytest.mark.calc
-@pytest.mark.parametrize("converters", converters_list)
+@pytest.mark.parametrize("converters", calc_converters_list)
 @pytest.mark.parametrize("amount", amounts)
 @pytest.mark.parametrize("currency", currencies)
-def test_compere_currency_amounts_calc_and_calc2(converters: str, amount: str, currency: str) -> None:
+def test_compere_currency_amounts_calc_and_calc2(converters: List[str], amount: str, currency: str) -> None:
     """
     Test to compare currency conversion results from different converters.
 
@@ -49,13 +51,13 @@ def test_compere_currency_amounts_calc_and_calc2(converters: str, amount: str, c
     compare_convertors_currency_conversion(converters, amount, currency)
 
 # Parameters for testing
-converters_list = [["web_xe", "calc"]]
+xe_calc_converters_list  = [["web_xe", "calc"]]
 
 @pytest.mark.xe_calc
-@pytest.mark.parametrize("converters", converters_list)
+@pytest.mark.parametrize("converters", xe_calc_converters_list )
 @pytest.mark.parametrize("amount", amounts)
 @pytest.mark.parametrize("currency", currencies)
-def test_compere_currency_amounts_xe_and_calc(converters: str, amount: str, currency: str) -> None:
+def test_compere_currency_amounts_xe_and_calc(converters: List[str], amount: str, currency: str) -> None:
     """
     Test to compare currency conversion results from different converters.
 
@@ -71,13 +73,13 @@ def test_compere_currency_amounts_xe_and_calc(converters: str, amount: str, curr
     compare_convertors_currency_conversion(converters, amount, currency)
 
 # Parameters for testing
-converters_list = [["web_xe", "calc2"]]
+xe_calc2_converters_list = [["web_xe", "calc2"]]
 
 @pytest.mark.xe_calc2
-@pytest.mark.parametrize("converters", converters_list)
+@pytest.mark.parametrize("converters", xe_calc2_converters_list)
 @pytest.mark.parametrize("amount", amounts)
 @pytest.mark.parametrize("currency", currencies)
-def test_compere_currency_amounts_xe_and_calc2(converters: str, amount: str, currency: str) -> None:
+def test_compere_currency_amounts_xe_and_calc2(converters: List[str], amount: str, currency: str) -> None:
     """
     Test to compare currency conversion results from different converters.
 
@@ -108,10 +110,4 @@ def compare_convertors_currency_conversion(converters: str, amount: str, currenc
         converter_app_test.assert_all_file_outputs(currency_amount_and_converter)
 
 
-# Add main method for standalone execution
-def main():
-    import sys
-    sys.exit(pytest.main(["-s", "-v", __file__]))
-
-if __name__ == "__main__":
-    main()
+sys.exit(pytest.main(["-s", "-v", __file__]))
