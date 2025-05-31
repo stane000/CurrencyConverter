@@ -1,16 +1,21 @@
 Project description
 ========================
 
+This project aims to convert currency from RSD (Serbian dinar) to EUR and USD using four different converters. 
+Two converters use Playwright to automate web-based conversion on external sites, 
+while the other two simulate conversion using the OS calculator. 
+Finally, tests are implemented to compare and validate the conversion results across all methods for consistency.
+
 Structure:
 
     CurrencyConverter folder:
 
-        currency_converter_interface -> interface for all converters
+        currency_converter_interface.py -> interface for all converters
         currency_converter_xe.py -> converter uses Playwright/'https://www.xe.com/', synchronous methods
         currency_converter_gb.py -> converter use Playwright/'https://wise.com/gb/currency-converter/', asynchronous methods
         currency_converter_calculator_base -> base class dor calculator converters
-        currency_converter_calculator -> converter uses windows os calculator built-in currency conversion but Requires language settings to be set to English
-        currency_converter_calculator_v2 -> converter uses windows os calculator to do the conversion using the exchange rate from reliable API 
+        currency_converter_calculator.py -> converter uses windows os calculator built-in currency conversion but Requires language settings to be set to English
+        currency_converter_calculator_v2.py -> converter uses windows os calculator to do the conversion using the exchange rate from reliable API 
        
         app.py -> app for running any convertor buy given arguments and stores result to outout file
                   converter: choices=['web_xe', 'web_gb', 'calc', 'calc2'],
@@ -20,10 +25,11 @@ Structure:
 
                   example: python path..\app.py web_xe euro 1000 path..\output.txt
                  
-    CurrencyConverterTests
-        converter_app_test: A class to test the currency converter application by running it as a subprocess.
+    CurrencyConverterTests folder:
+
+        converter_app_test.py: A class to test the currency converter application by running it as a subprocess.
         pytest.ini: store pytest markers
-        test_compare_convertors_currency_conversion: stores tests for testing app.py
+        test_compare_convertors_currency_conversion.py: stores tests for testing app.py
             1. test_compere_currency_amounts_web_gb_and_web_xe:
                     marker: web,
                     compares results for web_xe and web_gb converter
@@ -65,25 +71,26 @@ Tests scripts ------------------------------------------------------------------
 run_web_converter_tests.bat
 -------------------------------
 Description:
-    Runs tests that are marked for web-based currency converters (e.g., XE, Wise).
+    Runs tests that are marked for web-based currency converters (e.g., XE, GB/Wise).
 
 Runs:
-    - Activates the virtual environment (.venv\Scripts\activate.bat)
+    - Activates the virtual environment (venv\Scripts\activate.bat)
     - Executes: `pytest -s -m web`
 
 Purpose:
     Runs tests that use Playwright 
-
 
 Note:
     Ensure that browsers are installed via Playwright and internet access is available.
 
 ---
 
-run_calc_converter_tests.bat *(optional, if exists)*
+run_calc_converter_tests.bat 
 --------------------------------------------------------
 Description:
     Runs tests that use local Windows Calculator for conversion.
+    calc: Requires windows language to be set to English
+    calc2: Requires internet connection
 
 Runs:
     - Activates the virtual environment
@@ -94,14 +101,44 @@ Purpose:
 
 ---
 
-run_all_tests.bat
----------------------------------------------
+run_webxe_calc_converter_tests
+--------------------------------------------------------
 Description:
-    Runs all available tests without any marker filtering.
+    Runs tests that use local Windows Calculator for conversion.
+    calc: Requires windows language to be set to English
 
 Runs:
     - Activates the virtual environment
-    - Executes: `pytest -s`
+    - Executes: `pytest -s -m calc`
+
+Purpose:
+    Verifies currency conversions using Playwright and built-in calculator logic or UI automation.
+
+---
+
+run_webxe_calc2_converter_tests
+--------------------------------------------------------
+Description:
+    Runs tests that use local Windows Calculator for conversion.
+    calc2: Requires internet connection
+
+Runs:
+    - Activates the virtual environment
+    - Executes: `pytest -s -m calc`
+
+Purpose:
+    Verifies currency conversions using Playwright and built-in calculator logic or UI automation.
+
+---
+
+run_all_converters.bat
+---------------------------------------------
+Description:
+    Runs test with all converters
+
+Runs:
+    - Activates the virtual environment
+    - Executes: `pytest -s`-m all_converters
 
 Purpose:
     For full regression or pre-release testing across all converters.
@@ -114,6 +151,7 @@ Marker Summary
 - calc     → tests using `calc`, `calc2`
 - xe_calc  → comparison between `web_xe` and `calc`
 - xe_calc2 → comparison between `web_xe` and `calc2`
+- all_converters -> comparison between web_xe`, `web_gb`, `calc, `calc2`
 
 How to Add New Marked Tests:
 ----------------------------
